@@ -155,6 +155,21 @@ amqp_uri_parsing(_Config) ->
                               {depth,     5}]),
                  lists:usort(TLSOpts4)),
 
+    {ok, #amqp_params_network{ssl_options = TLSOpts5}} =
+        amqp_uri:parse("amqps://host/%2f?server_name_indication=foobar"),
+    ?assertEqual(lists:usort([{server_name_indication,"foobar"}]),
+                 lists:usort(TLSOpts5)),
+
+    {ok, #amqp_params_network{ssl_options = TLSOpts6}} =
+        amqp_uri:parse("amqps://host/%2f?sni=barbaz"),
+    ?assertEqual(lists:usort([{server_name_indication,"barbaz"}]),
+                 lists:usort(TLSOpts6)),
+
+    {ok, #amqp_params_network{ssl_options = TLSOpts7}} =
+        amqp_uri:parse("amqps://host/%2f?server_name_indication=disable"),
+    ?assertEqual(lists:usort([{server_name_indication,disable}]),
+                 lists:usort(TLSOpts7)),
+
     %% Various failure cases
     ?assertMatch({error, _}, amqp_uri:parse("http://www.rabbitmq.com")),
     ?assertMatch({error, _}, amqp_uri:parse("amqp://foo:bar:baz")),
