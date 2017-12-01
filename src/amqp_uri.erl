@@ -177,13 +177,14 @@ build_ssl_broker(ParsedUri, DefaultVHost) ->
                               L
                       end
            end || {Fun, Key} <-
-                      [{fun find_path_parameter/1,    cacertfile},
-                       {fun find_path_parameter/1,    certfile},
-                       {fun find_path_parameter/1,    keyfile},
-                       {fun find_atom_parameter/1,    verify},
+                      [{fun find_path_parameter/1, cacertfile},
+                       {fun find_path_parameter/1, certfile},
+                       {fun find_path_parameter/1, keyfile},
+                       {fun find_atom_parameter/1, verify},
                        {fun find_boolean_parameter/1, fail_if_no_peer_cert},
                        {fun find_identity_parameter/1, password},
-                       {fun find_integer_parameter/1,  depth}]],
+                       {fun find_sni_parameter/1, server_name_indication},
+                       {fun find_integer_parameter/1, depth}]],
           []),
     Params#amqp_params_network{ssl_options = SSLOptions}.
 
@@ -230,6 +231,11 @@ parse_amqp_param(Field, String) ->
 
 find_path_parameter(Value) ->
     find_identity_parameter(Value).
+
+find_sni_parameter("disable") ->
+    disable;
+find_sni_parameter(Value) ->
+    return(Value).
 
 find_identity_parameter(Value) -> return(Value).
 

@@ -161,7 +161,7 @@ amqp_uri_parsing(_Config) ->
                  lists:usort(TLSOpts5)),
 
     {ok, #amqp_params_network{ssl_options = TLSOpts6}} =
-        amqp_uri:parse("amqps://host/%2f?sni=barbaz"),
+        amqp_uri:parse("amqps://host/%2f?server_name_indication=barbaz"),
     ?assertEqual(lists:usort([{server_name_indication,"barbaz"}]),
                  lists:usort(TLSOpts6)),
 
